@@ -97,6 +97,7 @@ class 시간표(Cog):
     @command(pass_context = True)
     async def 다음(self, ctx: Context):
         time = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
+        second_time = datetime.datetime.utcnow() + datetime.timedelta(hours=9,minutes=11)
         week_num = time.weekday()
         week = dateDict[time.weekday()]
         
@@ -105,12 +106,19 @@ class 시간표(Cog):
         
         index_num = 8
         index_num = time_to_section(hour, min)
+        second_index_num = time_to_section(second_time.hour, second_time.min)
+        
+        
+            
         
         if hour == 8 and min <= 59 and min > 40:
             index_num = 1
         else:
-            if index_num < 8:
-                index_num += 1
+            if not index_num == second_index_num:
+                index_num = second_index_num
+            else:
+                if index_num < 8:
+                    index_num += 1
         
         vaca_date_diff = cal_date(ws2['A1'].value, ws2['A2'].value, ws2['A3'].value, ws2['B1'].value, ws2['B2'].value, ws2['B3'].value)
         now = time
