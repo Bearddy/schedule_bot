@@ -106,7 +106,7 @@ class 시간표(Cog):
         
         index_num = 8
         index_num = time_to_section(hour, min)
-        second_index_num = time_to_section(second_time.hour, second_time.min)
+        second_index_num = time_to_section(second_time.hour, second_time.minute)
         
         
             
