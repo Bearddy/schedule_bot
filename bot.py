@@ -23,7 +23,7 @@ async def on_ready():
     game = discord.Game('!!지금 을 치면 현재 무슨수업인지 알수있다')
     await bot.change_presence(status=discord.Status.online, activity=game)
 
-bot.run('OTIxMjYwMjgxNjk3NTYyNjU0.YbwUfw.i5msoan8WyLeWgBNYF-lgsggddY')
-#bot.run(os.environ['bot_token'])
+
+bot.run(os.environ['bot_token'])
 
 
