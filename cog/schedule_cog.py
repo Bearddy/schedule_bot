@@ -141,8 +141,8 @@ class 시간표(Cog):
 
     @command(pass_context = True)
     async def 아까(self, ctx: Context):
-        time = datetime.datetime.utcnow() + datetime.timedelta(hours=7)
-        second_time = datetime.datetime.utcnow() + datetime.timedelta(hours=7,minutes=-11)
+        time = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
+        second_time = datetime.datetime.utcnow() + datetime.timedelta(hours=9,minutes=-11)
         week_num = time.weekday()
         week = dateDict[time.weekday()]
         
