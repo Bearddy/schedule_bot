@@ -141,8 +141,8 @@ class 시간표(Cog):
 
     @command(pass_context = True)
     async def 아까(self, ctx: Context):
-        time = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
-        second_time = datetime.datetime.utcnow() + datetime.timedelta(hours=9,minutes=-11)
+        time = datetime.datetime.utcnow() + datetime.timedelta(hours=7)
+        second_time = datetime.datetime.utcnow() + datetime.timedelta(hours=7,minutes=-11)
         week_num = time.weekday()
         week = dateDict[time.weekday()]
         
@@ -210,7 +210,7 @@ class 시간표(Cog):
                         if delta > 0:
                             await ctx.send(f"{delta}분후의 수업 : {ws1[cell_name].value}")
                         elif delta < 0:
-                            await ctx.send(f"{delta}분전의 수업 : {ws1[cell_name].value}")
+                            await ctx.send(f"{delta * -1}분전의 수업 : {ws1[cell_name].value}")
                         await ctx.send(f"{class_num(ws1[cell_name].value)}")
                     elif delta == 0:
                         await ctx.send("그럴꺼면 !!지금 명령어를 치세요")
