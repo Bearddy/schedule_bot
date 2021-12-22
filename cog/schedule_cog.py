@@ -106,7 +106,7 @@ class 시간표(Cog):
         
         index_num = 8
         index_num = time_to_section(hour, min)
-        second_index_num = time_to_section(second_time.hour, second_time.minute)
+        second_index_num = time_to_section(second_time.hour, second_time.min)
         
         
             
@@ -142,21 +142,27 @@ class 시간표(Cog):
     @command(pass_context = True)
     async def 아까(self, ctx: Context):
         time = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
+        second_time = datetime.datetime.utcnow() + datetime.timedelta(hours=9,minutes=-11)
         week_num = time.weekday()
         week = dateDict[time.weekday()]
         
-        hour = time.hour
+        hour = time.hour 
         min = time.minute
         
         index_num = 8
-        
         index_num = time_to_section(hour, min)
+        second_index_num = time_to_section(second_time.hour, second_time.min)
         
-        if index_num > 1:
-            index_num -= 1
+        
+            
+        
+        
+        if not index_num == second_index_num:
+            index_num = second_index_num
         else:
-            index_num = 8
-
+            if index_num < 8:
+                index_num -= 1
+                
         vaca_date_diff = cal_date(ws2['A1'].value, ws2['A2'].value, ws2['A3'].value, ws2['B1'].value, ws2['B2'].value, ws2['B3'].value)
         now = time
         to_vaca_date_diff = cal_date(ws2['A1'].value, ws2['A2'].value, ws2['A3'].value, now.year, now.month, now.day)
@@ -200,9 +206,14 @@ class 시간표(Cog):
             else :
                 if index_num < 8 :
                     cell_name = str(dateDict[week_num] + str(index_num))
-                    await ctx.send(f"{delta}분후의 수업 : {ws1[cell_name].value}")
-                    await ctx.send(f"{class_num(ws1[cell_name].value)}")
-                    
+                    if delta > 0 or delta < 0:
+                        if delta > 0:
+                            await ctx.send(f"{delta}분후의 수업 : {ws1[cell_name].value}")
+                        elif delta < 0:
+                            await ctx.send(f"{delta}분전의 수업 : {ws1[cell_name].value}")
+                        await ctx.send(f"{class_num(ws1[cell_name].value)}")
+                    elif delta == 0:
+                        await ctx.send("그럴꺼면 !!지금 명령어를 치세요")
 
                 else:
                     await ctx.send(f"수업이 없습니다")
