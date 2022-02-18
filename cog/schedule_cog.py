@@ -271,7 +271,7 @@ class 시간표(Cog):
         embed.add_field(name="화요일", value="국어    생물    수학  체육  영어  컴퓨터    화학", inline=False)
         embed.add_field(name="수요일", value="생물    물리    국어  수학  화학    영어  한국어", inline=False)
         embed.add_field(name="목요일", value="생물  한국어    화학  영어  수학    물리    국어", inline=False)
-        embed.add_field(name="금요일", value="화학    수학    국어  영어  물리  컴퓨터  한국어", inline=False)
+        embed.add_field(name="금요일", value="화학    수학  컴퓨터  영어  물리    국어  한국어", inline=False)
 
         embed.set_footer(text="고2-3")
 
