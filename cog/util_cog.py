@@ -33,15 +33,19 @@ class 유용한기능(Cog):
 
     @command(pass_context = True)
     async def 투표(self, ctx: Context, *, list: str):
+        emoji = ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣']
         vote_list = list.split("/")
         if(len(vote_list) > 6):
             await ctx.send("투표 항목이 너무 많으면 도배가 될수있으므로 5개 이하로 해주세요")
         else:
-            embed = discord.Embed(title="🎉투표🎉   ->   " + vote_list[0], description=" ", color=0x00ff00)
-            await ctx.send(embed=embed)
+            embed = discord.Embed(title="🎉투표🎉", description="**" + vote_list[0] + "**", color=0x00ff00)
+            
             for i in range(1, len(vote_list)):
-                choose = await ctx.send("```" + str(i) + ". " + vote_list[i] + "```")
-                await choose.add_reaction('👍')
+                embed.add_field(name="ㅤ", value=str(i) + "." + vote_list[i], inline=False)
+            msg = await ctx.send(embed=embed)
+            
+            for i in range(0, len(vote_list)-1):
+                await msg.add_reaction(emoji[i])
 
     
     @command(pass_context = True)
