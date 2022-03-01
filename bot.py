@@ -7,7 +7,7 @@ from os import listdir
 from random import *
 from discord.ext.commands import Bot, Context
 
-bot = Bot(command_prefix='!!')
+bot = Bot(command_prefix='!!!')
 
 
 for filename in listdir('cog'):
@@ -20,7 +20,7 @@ async def on_ready():
     
     print(bot.user.name)
     print('봇이 시작됨')
-    game = discord.Game('!!헬프 로 도움말을 확인해보세요')
+    game = discord.Game('!!!헬프 로 도움말을 확인해보세요')
     await bot.change_presence(status=discord.Status.online, activity=game)
 
 
