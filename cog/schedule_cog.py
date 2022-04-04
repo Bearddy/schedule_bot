@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import discord
 from discord.ext import tasks
 from discord.ext.commands import Cog, Bot, command, Context
@@ -24,12 +25,12 @@ class 시간표(Cog):
     @command(pass_context = True)
     async def 저장(self, ctx: Context, cur_date: int, section_num: int, lesson):
         if ctx.author.guild_permissions.administrator:
-            if cur_date < 6 and cur_date > 0:
+            if cur_date < 5 and cur_date >= 0:
                 if section_num < 8 and section_num > 0:
                     cell_name = str(dateDict[cur_date] + str(section_num))
                     ws1[cell_name] = lesson
                     wb.save('classes.xlsx')
-                    await ctx.send(f"{weekDict[cur_date]}의 {section_num}교시는 {lesson}으로 설정되었습니다")
+                    await ctx.send(f"{weekDict[cur_date+1]}의 {section_num}교시는 {lesson}으로 설정되었습니다")
                 else:
                     await ctx.send("몇교시를 입력하셨는지 다시 확인해주세요")
             else:
@@ -113,6 +114,8 @@ class 시간표(Cog):
         
         if hour == 8 and min <= 59 and min > 40:
             index_num = 1
+        elif (hour == 12 and min >= 30) or (hour == 13 and min < 30):
+            index_num = 5
         else:
             if not index_num == second_index_num:
                 index_num = second_index_num
@@ -156,12 +159,14 @@ class 시간표(Cog):
         
             
         
-        
-        if not index_num == second_index_num:
-            index_num = second_index_num
+        if (hour == 12 and min >= 30) or (hour == 13 and min < 30):
+            index_num = 4
         else:
-            if index_num < 8:
-                index_num -= 1
+            if not index_num == second_index_num:
+                index_num = second_index_num
+            else:
+                if index_num < 8:
+                    index_num -= 1
                 
         vaca_date_diff = cal_date(ws2['A1'].value, ws2['A2'].value, ws2['A3'].value, ws2['B1'].value, ws2['B2'].value, ws2['B3'].value)
         now = time
@@ -213,7 +218,7 @@ class 시간표(Cog):
                             await ctx.send(f"{delta * -1}분전의 수업 : {ws1[cell_name].value}")
                         await ctx.send(f"{class_num(ws1[cell_name].value)}")
                     elif delta == 0:
-                        await ctx.send("그럴꺼면 !!지금 명령어를 치세요")
+                        await ctx.send("그럴꺼면 !!!지금 명령어를 치세요")
 
                 else:
                     await ctx.send(f"수업이 없습니다")
@@ -256,6 +261,20 @@ class 시간표(Cog):
     @command(pass_context = True)
     async def 전부(self, ctx:Context):
         
+        monday = '';
+        tuesday = '';
+        wednesday = '';
+        thursday = '';
+        friday = '';
+        
+        classes = {0: '', 1:'', 2:'', 3:'', 4:''}
+        
+        for i in range(0, 5):
+            for j in range(0, 7):
+                classes[i] = classes[i] + ws1[str(dateDict[i] + str(j+1))].value + '\t'
+                
+                
+                
         embed = discord.Embed(title="✨✨시간표✨✨", description="모든 시간표 나열", color=0x00ffff)
             
 #        embed.add_field(name=" 요일", value="     월       화       수       목       금", inline=False)
@@ -267,11 +286,20 @@ class 시간표(Cog):
 #        embed.add_field(name="6교시", value="   수학   컴퓨터     영어     물리   컴퓨터", inline=False)
 #        embed.add_field(name="7교시", value="   작문     화학   한국어     국어   한국어", inline=False)
         
-        embed.add_field(name="월요일", value="생물    물리  한국어  국어  영어    수학    작문", inline=False)
-        embed.add_field(name="화요일", value="국어    생물    수학  체육  영어  컴퓨터    화학", inline=False)
-        embed.add_field(name="수요일", value="생물    물리    국어  수학  화학    영어  한국어", inline=False)
-        embed.add_field(name="목요일", value="생물  한국어    화학  영어  수학    물리    국어", inline=False)
-        embed.add_field(name="금요일", value="화학    수학  컴퓨터  영어  물리    국어  한국어", inline=False)
+        #embed.add_field(name="월요일", value="생물    물리  한국어  국어  영어    수학    작문", inline=False)
+        #embed.add_field(name="화요일", value="국어    생물    수학  체육  영어  컴퓨터    화학", inline=False)
+        #embed.add_field(name="수요일", value="생물    물리    국어  수학  화학    영어  한국어", inline=False)
+        #embed.add_field(name="목요일", value="생물  한국어    화학  영어  수학    물리    국어", inline=False)
+        #embed.add_field(name="금요일", value="화학    수학  컴퓨터  영어  물리    국어  한국어", inline=False)
+        
+        for i in range(0, 5):
+            embed.add_field(name=weekDict[i+1], value=classes[i], inline=False)
+            
+        #embed.add_field(name="월요일", value=f"{classes[0]}", inline=False)
+        #embed.add_field(name="화요일", value=f"{classes[1]}", inline=False)
+        #embed.add_field(name="수요일", value=f"{classes[2]}", inline=False)
+        #embed.add_field(name="목요일", value=f"{classes[3]}", inline=False)
+        #embed.add_field(name="금요일", value=f"{classes[4]}", inline=False)
 
         embed.set_footer(text="고2-3")
 
@@ -333,17 +361,17 @@ def time_to_section(hour: int, min: int):
     num = 8
     if hour == 9 and min <= 45 :
         num = 1
-    elif (hour == 9 and min > 55 ) or (hour == 10 and min <= 40):
+    elif (hour == 9 and min >= 55 ) or (hour == 10 and min < 40):
         num = 2
-    elif (hour == 10 and min > 50 ) or (hour == 11 and min <= 35):
+    elif (hour == 10 and min >= 50 ) or (hour == 11 and min < 35):
         num = 3
-    elif (hour == 11 and min > 45 ) or (hour == 12 and min <= 30):
+    elif (hour == 11 and min >= 45 ) or (hour == 12 and min < 30):
         num = 4
-    elif (hour == 13 and min > 30 ) or (hour == 14 and min <= 15):
+    elif (hour == 13 and min >= 30 ) or (hour == 14 and min < 15):
         num = 5
-    elif (hour == 14 and min > 25 ) or (hour == 15 and min <= 10):
+    elif (hour == 14 and min >= 25 ) or (hour == 15 and min < 10):
         num = 6
-    elif (hour == 15 and min > 20 ) or (hour == 16 and min <= 5):
+    elif (hour == 15 and min >= 20 ) or (hour == 16 and min < 5):
         num = 7
     else:
         num = 8
