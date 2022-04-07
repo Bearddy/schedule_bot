@@ -133,6 +133,7 @@ class 경고명령어(Cog):
     @경고.command(pass_context = True)
     async def 제거(self, ctx, user: discord.User, amount: int):
         if ctx.author.guild_permissions.administrator:
+            warn_check = False
             for i in range(0, len(alpha)):
                 if (str(user.id) == str(ws1[alpha[i] + str('1')].value) + str(ws1[str(alpha[i] + str('4'))].value)):
                     if not ws1[alpha[i] + str('2')].value == 0:
@@ -147,10 +148,11 @@ class 경고명령어(Cog):
                         
                         await ctx.send(f"{user.name}님의 경고 횟수 : {ws1[alpha[i] + str('2')].value}번")
                         wb.save('warn.xlsx') 
+                        warn_check = True
                         break
-                    else:
-                        await ctx.send(f"{user.name}님은 아직 경고당한적이 없습니다")
-                        break
+                    
+            if(warn_check == False):
+                await ctx.send(f"{user.name}님은 아직 경고당한적이 없습니다")
         else:
             await ctx.send("관리자 권한이 없습니다!")
 
