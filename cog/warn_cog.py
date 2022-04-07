@@ -126,9 +126,6 @@ class 경고명령어(Cog):
                     
                     warn_check = True
                     break   
-                else:
-                    await ctx.send(f"{user.name}님은 경고가 없는 클린한 사람입니다") 
-                    break
         
         if(warn_check == False):
             await ctx.send(f"{user.name}님은 경고가 없는 클린한 사람입니다") 
