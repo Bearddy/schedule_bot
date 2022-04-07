@@ -20,7 +20,7 @@ class 경고명령어(Cog):
     async def 하기(self, ctx, user: discord.User, amount: int, *, reason):
         if ctx.author.guild_permissions.administrator:
             if not user.guild_permissions.administrator:
-                if not reason:
+                if reason is None:
                     await ctx.send("사유를 적으세요")
                     return
 
@@ -45,20 +45,19 @@ class 경고명령어(Cog):
                                 check = False
                             
                         if ((ws1[alpha[i] + str('3')].value is None or ws1[alpha[i] + str('3')].value == False) and ws1[alpha[i] + str('2')].value >= 4):
-                            await ctx.send(f"성공적으로 {user.name}에게 {amount}개의 경고를 부여했습니다")
-                            await ctx.send(f"{user.name}님의 경고 횟수 : {ws1[alpha[i] + str('2')].value}번")
+                        
                             await user.send(f"경고 횟수가 4번이 됬으므로 \"{ctx.message.guild.name}\" 에서 추방 당하셨습니다")
                             await user.kick(reason=f"경고 횟수가 4번")
                             ws1[alpha[i] + str('3')] = True
                         if (ws1[alpha[i] + str('3')].value == True and ws1[alpha[i] + str('2')].value >= 7):
-                            await ctx.send(f"성공적으로 {user.name}에게 {amount}개의 경고를 부여했습니다")
-                            await ctx.send(f"{user.name}님의 경고 횟수 : {ws1[alpha[i] + str('2')].value}번")
+
                             await user.send(f"경고 횟수가 7번이 됬으므로 \"{ctx.message.guild.name}\" 에서 밴 당하셨습니다")
                             await user.ban(reason=f"경고 횟수가 7번")
                             ws1[alpha[i] + str('3')] = False
                             
                         wb.save('warn.xlsx') 
-                        
+                        await ctx.send(f"성공적으로 {user.name}에게 {amount}개의 경고를 부여했습니다")
+                        await ctx.send(f"{user.name}님의 경고 횟수 : {ws1[alpha[i] + str('2')].value}번")
                         
                         break
                     elif(str(ws1[str(alpha[i] + str('1'))].value) + str(ws1[str(alpha[i] + str('4'))].value) == str(user.id)):
@@ -76,20 +75,20 @@ class 경고명령어(Cog):
                                 check = False
                             
                         if ((ws1[alpha[i] + str('3')].value is None or ws1[alpha[i] + str('3')].value == False) and ws1[alpha[i] + str('2')].value >= 4):
-                            await ctx.send(f"성공적으로 {user.name}에게 {amount}개의 경고를 부여했습니다")
-                            await ctx.send(f"{user.name}님의 경고 횟수 : {ws1[alpha[i] + str('2')].value}번")
+                        
                             await user.send(f"경고 횟수가 4번이 됬으므로 \"{ctx.message.guild.name}\" 에서 추방 당하셨습니다")
                             await user.kick(reason=f"경고 횟수가 4번")
                             ws1[alpha[i] + str('3')] = True
                         if (ws1[alpha[i] + str('3')].value == True and ws1[alpha[i] + str('2')].value >= 7):
-                            await ctx.send(f"성공적으로 {user.name}에게 {amount}개의 경고를 부여했습니다")
-                            await ctx.send(f"{user.name}님의 경고 횟수 : {ws1[alpha[i] + str('2')].value}번")
+                            
+                            
                             await user.send(f"경고 횟수가 7번이 됬으므로 \"{ctx.message.guild.name}\" 에서 밴 당하셨습니다")
                             await user.ban(reason=f"경고 횟수가 7번")
                             ws1[alpha[i] + str('3')] = False
                             
                         wb.save('warn.xlsx') 
-                        
+                        await ctx.send(f"성공적으로 {user.name}에게 {amount}개의 경고를 부여했습니다")
+                        await ctx.send(f"{user.name}님의 경고 횟수 : {ws1[alpha[i] + str('2')].value}번")
                         break
                         
             else:
@@ -99,9 +98,10 @@ class 경고명령어(Cog):
 
     @경고.command(pass_context = True)
     async def 확인(self, ctx, user:discord.User):
+        warn_check = False
         for i in range(0, len(alpha)):
             if (str(user.id) == str(ws1[alpha[i] + str('1')].value) + str(ws1[str(alpha[i] + str('4'))].value)):
-                if not ws1[alpha[i] + str('2')].value == 0:
+                if not int(ws1[alpha[i] + str('2')].value) == 0:
                     
                     j = 0
                     check = True
@@ -123,13 +123,15 @@ class 경고명령어(Cog):
                     embed.set_thumbnail(url="https://ifh.cc/g/5LIwNe.jpg")
 
                     await ctx.send(embed=embed)
+                    
+                    warn_check = True
                     break   
                 else:
                     await ctx.send(f"{user.name}님은 경고가 없는 클린한 사람입니다") 
                     break
-            else:
-                await ctx.send(f"{user.name}님은 경고가 없는 클린한 사람입니다") 
-                break
+        
+        if(warn_check == False):
+            await ctx.send(f"{user.name}님은 경고가 없는 클린한 사람입니다") 
             
     @경고.command(pass_context = True)
     async def 제거(self, ctx, user: discord.User, amount: int):
