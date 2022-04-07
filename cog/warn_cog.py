@@ -17,7 +17,7 @@ class 경고명령어(Cog):
         '''경고해줌'''
 
     @경고.command(pass_context = True)
-    async def 하기(self, ctx, user: discord.User, amount: int, *, reason):
+    async def 주기(self, ctx, user: discord.User, amount: int, *, reason):
         if ctx.author.guild_permissions.administrator:
             if not user.guild_permissions.administrator:
                 if reason is None:
